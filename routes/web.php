@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\ProfileController;
@@ -17,13 +18,9 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-Route::middleware(['role:admin'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index']);
-});
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)
+    ->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -31,13 +28,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Arsip routes
-    Route::resource('arsip', ArsipController::class);
+    Route::get('arsip/export', [ArsipController::class, 'export'])->name('arsip.export');
+    Route::get('arsip/{arsip}/preview', [ArsipController::class, 'preview'])->name('arsip.preview');
     Route::get('arsip/{arsip}/download', [ArsipController::class, 'download'])->name('arsip.download');
+    Route::resource('arsip', ArsipController::class);
 
     // Admin only routes
     Route::middleware('role:admin')->group(function () {
-        Route::resource('divisi', DivisiController::class);
-        Route::resource('kategori', KategoriController::class);
+        Route::resource('divisi', DivisiController::class)->except(['create', 'edit', 'show']);
+        Route::resource('kategori', KategoriController::class)->except(['create', 'edit', 'show']);
     });
 });
 

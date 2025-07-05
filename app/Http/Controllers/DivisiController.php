@@ -2,63 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Divisi;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DivisiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return Inertia::render('Divisi/Index', [
+            'divisi' => Divisi::latest()->get(),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_divisi' => 'required|string|max:255|unique:divisi',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        Divisi::create($request->all());
+
+        return redirect()->route('divisi.index')
+            ->with('success', 'Divisi berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, Divisi $divisi)
     {
-        //
+        $request->validate([
+            'nama_divisi' => 'required|string|max:255|unique:divisi,nama_divisi,' . $divisi->id,
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        $divisi->update($request->all());
+
+        return redirect()->route('divisi.index')
+            ->with('success', 'Divisi berhasil diperbarui.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(Divisi $divisi)
     {
-        //
-    }
+        if ($divisi->arsip()->count() > 0) {
+            return redirect()->route('divisi.index')
+                ->with('error', 'Divisi tidak dapat dihapus karena masih digunakan oleh arsip.');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $divisi->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('divisi.index')
+            ->with('success', 'Divisi berhasil dihapus.');
     }
 }

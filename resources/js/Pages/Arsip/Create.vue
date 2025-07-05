@@ -8,7 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import Dropzone from '@/Components/Dropzone.vue'; // <-- Import komponen Dropzone
+import Dropzone from '@/Components/Dropzone.vue';
 
 const props = defineProps({
     divisi: Array,
@@ -120,5 +120,3 @@ const submit = () => {
         </div>
     </AuthenticatedLayout>
 </template>
-
-// ---

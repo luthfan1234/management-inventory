@@ -37,15 +37,15 @@ const authUser = usePage().props.auth.user;
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink :href="route('arsip.index')" :active="route().current('arsip.index')">
+                                <NavLink :href="route('arsip.index')" :active="route().current().startsWith('arsip.')">
                                     Arsip Dokumen
                                 </NavLink>
                                 <!-- Admin Only Links -->
                                 <template v-if="authUser.role === 'admin'">
-                                    <NavLink :href="route('divisi.index')" :active="route().current('divisi.index')">
+                                    <NavLink :href="route('divisi.index')" :active="route().current().startsWith('divisi.')">
                                         Manajemen Divisi
                                     </NavLink>
-                                    <NavLink :href="route('kategori.index')" :active="route().current('kategori.index')">
+                                    <NavLink :href="route('kategori.index')" :active="route().current().startsWith('kategori.')">
                                         Manajemen Kategori
                                     </NavLink>
                                 </template>

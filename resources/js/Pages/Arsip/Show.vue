@@ -5,7 +5,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import PdfPreviewModal from '@/Components/PdfPreviewModal.vue'; // <-- Import modal
+import PdfPreviewModal from '@/Components/PdfPreviewModal.vue';
 
 const props = defineProps({
     arsip: Object
@@ -124,3 +124,5 @@ const formatDate = (dateString) => {
 
     </AuthenticatedLayout>
 </template>
+
+// ---

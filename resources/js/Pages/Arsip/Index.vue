@@ -4,9 +4,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
-import PdfPreviewModal from '@/Components/PdfPreviewModal.vue'; // <-- Import modal
+import PdfPreviewModal from '@/Components/PdfPreviewModal.vue';
 
 const props = defineProps({
     arsip: Object,
@@ -48,14 +48,15 @@ watch([search, divisiId, kategoriId], debounce(() => {
     });
 }, 300));
 
-const formatBytes = (bytes, decimals = 2) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-};
+const exportUrl = computed(() => {
+    const params = new URLSearchParams({
+        search: search.value || '',
+        divisi_id: divisiId.value || '',
+        kategori_id: kategoriId.value || ''
+    }).toString();
+    return `${route('arsip.export')}?${params}`;
+});
+
 
 const deleteArsip = (id) => {
     if (confirm('Apakah Anda yakin ingin menghapus arsip ini?')) {
@@ -80,10 +81,10 @@ const deleteArsip = (id) => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
 
-                        <div v-if="$page.props.flash.success" class="mb-4 p-4 bg-green-100 text-green-700 border border-green-400 rounded">
+                        <div v-if="$page.props.flash && $page.props.flash.success" class="mb-4 p-4 bg-green-100 text-green-700 border border-green-400 rounded">
                             {{ $page.props.flash.success }}
                         </div>
-                        <div v-if="$page.props.flash.error" class="mb-4 p-4 bg-red-100 text-red-700 border border-red-400 rounded">
+                        <div v-if="$page.props.flash && $page.props.flash.error" class="mb-4 p-4 bg-red-100 text-red-700 border border-red-400 rounded">
                             {{ $page.props.flash.error }}
                         </div>
 
@@ -91,6 +92,10 @@ const deleteArsip = (id) => {
                             <Link v-if="auth.user.role === 'admin'" :href="route('arsip.create')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Tambah Arsip
                             </Link>
+                             <a :href="exportUrl" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                <span>Export Excel</span>
+                            </a>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -162,5 +167,3 @@ const deleteArsip = (id) => {
 
     </AuthenticatedLayout>
 </template>
-
-// ---

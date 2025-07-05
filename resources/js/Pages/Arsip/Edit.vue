@@ -8,7 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import Dropzone from '@/Components/Dropzone.vue'; // <-- Import komponen Dropzone
+import Dropzone from '@/Components/Dropzone.vue';
 
 const props = defineProps({
     arsip: Object,
@@ -33,8 +33,6 @@ const handleFile = (file) => {
 };
 
 const submit = () => {
-    // Inertia handles multipart form data with PUT/PATCH by converting it to a POST request
-    // with a _method field. This is why we use form.post here.
     form.post(route('arsip.update', props.arsip.id), {
         onFinish: () => form.reset('file'),
     });
