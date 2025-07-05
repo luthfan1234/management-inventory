@@ -76,7 +76,7 @@ const submit = () => {
                                 <InputLabel for="divisi_id" value="Divisi" />
                                 <select id="divisi_id" v-model="form.divisi_id" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                     <option value="" disabled>Pilih Divisi</option>
-                                    <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama_divisi }}</option>
+                                    <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama }}</option>
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.divisi_id" />
                             </div>
