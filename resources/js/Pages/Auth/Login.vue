@@ -138,7 +138,7 @@ const submit = () => {
             <section class="hidden md:flex flex-col justify-between rounded-3xl bg-gradient-to-b from-[#0065B3] to-blue-900 text-white p-10 shadow-lg h-full">
                 <div>
                     <p class="text-sm mb-3 text-blue-200 font-semibold">— PT Kereta Api Indonesia (Persero)</p>
-                    <h2 class="font-extrabold text-3xl sm:text-4xl leading-snug">Mengelola dan Mengamankan Aset Digital<br />DAOP 6 Yogyakarta 🚆</h2>
+                    <h2 class="font-extrabold text-3xl sm:text-4xl leading-snug">Mengelola dan Mengamankan Aset Digital<br />DAOP 6 Yogyakarta</h2>
                 </div>
 
                 <div class="mt-auto text-center">
