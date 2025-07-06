@@ -1,5 +1,5 @@
 // File: resources/js/Layouts/AuthenticatedLayout.vue
-// Layout utama yang diperbaiki: sidebar kini menggunakan h-screen untuk tinggi maksimal.
+// PERBAIKAN FINAL: Memastikan logo aplikasi adalah link yang fungsional.
 
 <script setup>
 import { ref } from 'vue';
@@ -16,26 +16,30 @@ const showingProfileDropdown = ref(false);
 
 <template>
     <Head>
+        <title>Arsip Digital</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </Head>
 
     <div class="bg-gray-50 font-sans min-h-screen flex">
         <aside :class="{'translate-x-0': showingMobileMenu, '-translate-x-full': !showingMobileMenu}" class="w-80 flex-shrink-0 flex flex-col bg-white border-r border-gray-200 fixed top-0 h-screen z-40 md:sticky md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
+
             <div class="flex items-center justify-between p-6 border-b border-gray-100">
-                <div class="inline-flex items-center space-x-3 cursor-pointer select-none">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                        <i class="material-icons text-white text-xl">folder</i>
+                <Link :href="route('dashboard')">
+                    <div class="inline-flex items-center space-x-3 select-none">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                            <i class="material-icons text-white text-xl">folder</i>
+                        </div>
+                        <div>
+                            <span class="font-bold text-xl text-gray-800 block">Arsip Digital</span>
+                            <span class="text-sm text-gray-500">DAOP 6 Yogyakarta</span>
+                        </div>
                     </div>
-                    <div>
-                        <span class="font-bold text-xl text-gray-800 block">Arsip Digital</span>
-                        <span class="text-sm text-gray-500">DAOP 6 Yogyakarta</span>
-                    </div>
-                </div>
+                </Link>
+
                 <button @click="showingMobileMenu = false" class="md:hidden text-gray-400 hover:text-gray-600">
                     <i class="material-icons text-xl">close</i>
                 </button>
             </div>
-
             <nav class="flex-1 px-4 py-6 space-y-2">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 px-3">Main Menu</p>
 
@@ -49,17 +53,17 @@ const showingProfileDropdown = ref(false);
                     <span class="font-medium">Dashboard</span>
                 </Link>
 
-                <Link :href="route('arsip.index')"
-                      class="flex items-center px-4 py-3 rounded-2xl transition-all group"
-                      :class="{
-                          'bg-blue-100 text-blue-700': route().current().startsWith('arsip.'),
-                          'text-gray-600 hover:bg-gray-100 hover:text-gray-900': !route().current().startsWith('arsip.')
-                      }">
-                    <i class="material-icons mr-3 text-xl">folder_open</i>
-                    <span class="font-medium">Arsip Dokumen</span>
-                </Link>
-
                 <template v-if="authUser.role === 'admin'">
+                    <Link :href="route('arsip.index')"
+                          class="flex items-center px-4 py-3 rounded-2xl transition-all group"
+                          :class="{
+                              'bg-blue-100 text-blue-700': route().current().startsWith('arsip.'),
+                              'text-gray-600 hover:bg-gray-100 hover:text-gray-900': !route().current().startsWith('arsip.')
+                          }">
+                        <i class="material-icons mr-3 text-xl">folder_open</i>
+                        <span class="font-medium">Arsip Dokumen</span>
+                    </Link>
+
                     <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-8 mb-4 px-3">Management</p>
 
                     <Link :href="route('divisi.index')"
@@ -82,7 +86,7 @@ const showingProfileDropdown = ref(false);
                         <span class="font-medium">Manajemen Kategori</span>
                     </Link>
                 </template>
-            </nav>
+                </nav>
 
             <div class="mt-auto"></div>
         </aside>
@@ -99,11 +103,6 @@ const showingProfileDropdown = ref(false);
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    <div class="hidden md:flex items-center bg-gray-100 rounded-2xl px-4 py-2">
-                        <i class="material-icons text-gray-400 mr-2">search</i>
-                        <input type="text" placeholder="Cari dokumen..." class="bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-500 w-64">
-                    </div>
-
                     <button class="p-2 text-gray-400 hover:text-gray-600 relative">
                         <i class="material-icons text-xl">notifications</i>
                         <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -122,14 +121,14 @@ const showingProfileDropdown = ref(false);
                             leave-from-class="transform opacity-100 scale-100"
                             leave-to-class="transform opacity-0 scale-95"
                         >
-                            <div v-if="showingProfileDropdown" @click.away="showingProfileDropdown = false" class="absolute top-full right-0 mt-3 w-80 bg-white rounded-2xl border border-gray-200 p-4 z-50">
+                            <div v-if="showingProfileDropdown" @click.away="showingProfileDropdown = false" class="absolute top-full right-0 mt-3 w-80 bg-white rounded-2xl border border-gray-200 p-4 z-50 shadow-2xl">
                                 <div class="flex items-center space-x-3 p-4 bg-gray-50 rounded-2xl mb-3">
                                     <img :src="`https://ui-avatars.com/api/?name=${authUser.name}&background=3B82F6&color=fff&rounded=true`" alt="User Avatar" class="w-12 h-12 rounded-xl object-cover" />
                                     <div class="flex-1 min-w-0">
                                         <p class="font-semibold text-gray-900 text-sm truncate">{{ authUser.name }}</p>
                                         <p class="text-gray-500 text-xs capitalize">{{ authUser.role }}</p>
                                     </div>
-                                    <Link :href="route('profile.edit')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                                    <Link :href="route('profile.edit')" @click="showingProfileDropdown = false" class="text-gray-400 hover:text-gray-600 transition-colors">
                                         <i class="material-icons text-lg">settings</i>
                                     </Link>
                                 </div>
@@ -144,7 +143,7 @@ const showingProfileDropdown = ref(false);
                 </div>
             </header>
 
-            <main class="p-8 flex-1 overflow-auto">
+            <main class="p-4 sm:p-6 lg:p-8 flex-1 overflow-auto">
                 <slot />
             </main>
         </div>

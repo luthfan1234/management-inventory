@@ -26,7 +26,7 @@ const openModal = (item = null) => {
     if (item) {
         isEditMode.value = true;
         form.id = item.id;
-        form.name = item.nama_divisi;
+        form.name = item.nama;
         form.deskripsi = item.deskripsi;
     } else {
         isEditMode.value = false;
@@ -46,9 +46,9 @@ const submit = () => {
         preserveScroll: true,
     };
     if (isEditMode.value) {
-        form.transform(data => ({ ...data, nama_divisi: data.name })).put(route('divisi.update', form.id), options);
+        form.transform(data => ({ ...data, nama: data.name })).put(route('divisi.update', form.id), options);
     } else {
-        form.transform(data => ({ ...data, nama_divisi: data.name })).post(route('divisi.store'), options);
+        form.transform(data => ({ ...data, nama: data.name })).post(route('divisi.store'), options);
     }
 };
 
@@ -107,7 +107,7 @@ const deleteItem = (id) => {
                         </tr>
                         <tr v-for="item in divisi" :key="item.id" class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <p class="font-medium text-gray-900">{{ item.nama_divisi }}</p>
+                                <p class="font-medium text-gray-900">{{ item.nama}}</p>
                             </td>
                             <td class="px-6 py-4">
                                 <p class="text-sm text-gray-600 truncate max-w-md">{{ item.deskripsi || '-' }}</p>

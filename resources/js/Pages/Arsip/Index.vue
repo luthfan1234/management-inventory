@@ -104,7 +104,7 @@ const deleteArsip = (id) => {
                 <input type="text" v-model="search" placeholder="Cari judul atau nomor arsip..." class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                 <select v-model="divisiId" class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                     <option :value="null">Semua Divisi</option>
-                    <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama_divisi }}</option>
+                    <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama}}</option>
                 </select>
                 <select v-model="kategoriId" class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
                     <option :value="null">Semua Kategori</option>
@@ -143,7 +143,7 @@ const deleteArsip = (id) => {
                         <tr v-for="item in arsip.data" :key="item.id" class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ item.nomor_arsip }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.judul }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ item.divisi.nama_divisi }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ item.divisi.nama }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ item.kategori.nama_kategori }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 uppercase">{{ item.file_type }}</span>

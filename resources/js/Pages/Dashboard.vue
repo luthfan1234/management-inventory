@@ -29,7 +29,7 @@ const formatDate = (dateString) => {
 
 // Data untuk chart, warna disesuaikan menjadi biru
 const arsipPerDivisiData = computed(() => ({
-    labels: props.stats.arsipPerDivisi.map(item => item.nama_divisi),
+    labels: props.stats.arsipPerDivisi.map(item => item.nama),
     datasets: [{
         label: 'Jumlah Arsip',
         backgroundColor: '#3B82F6', // Blue-500
@@ -171,7 +171,7 @@ const chartOptions = {
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="font-medium text-gray-900 truncate">{{ item.judul }}</p>
-                                <p class="text-sm text-gray-500 truncate">{{ item.divisi?.nama_divisi || 'Divisi tidak diketahui' }}</p>
+                                <p class="text-sm text-gray-500 truncate">{{ item.divisi?.nama || 'Divisi tidak diketahui' }}</p>
                             </div>
                             <div class="text-right flex-shrink-0">
                                 <p class="text-xs text-gray-400">{{ formatDate(item.created_at) }}</p>

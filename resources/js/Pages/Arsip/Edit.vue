@@ -81,7 +81,7 @@ const submit = () => {
                         <div class="md:col-span-1">
                              <label for="divisi_id" class="block text-sm font-medium text-gray-700 mb-1">Divisi</label>
                              <select id="divisi_id" v-model="form.divisi_id" required class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
-                                 <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama_divisi }}</option>
+                                 <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama }}</option>
                              </select>
                              <InputError class="mt-2" :message="form.errors.divisi_id" />
                         </div>
