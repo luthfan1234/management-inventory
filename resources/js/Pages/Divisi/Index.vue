@@ -1,12 +1,11 @@
 // File: resources/js/Pages/Divisi/Index.vue
-// Halaman untuk manajemen CRUD Divisi.
+// Halaman untuk manajemen CRUD Divisi dengan gaya modern.
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import ManagementModal from '@/Components/ManagementModal.vue';
+import ManagementModal from '@/Components/ManagementModal.vue'; // Asumsi modal ini sudah ada
 
 const props = defineProps({
     divisi: Array,
@@ -44,6 +43,7 @@ const closeModal = () => {
 const submit = () => {
     const options = {
         onSuccess: () => closeModal(),
+        preserveScroll: true,
     };
     if (isEditMode.value) {
         form.transform(data => ({ ...data, nama_divisi: data.name })).put(route('divisi.update', form.id), options);
@@ -66,44 +66,65 @@ const deleteItem = (id) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Manajemen Divisi</h2>
+             <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 class="font-bold text-2xl text-gray-800">Manajemen Divisi</h2>
+                    <p class="text-sm text-gray-500">Kelola semua divisi yang terdaftar dalam sistem.</p>
+                </div>
+            </div>
         </template>
 
-        <div class="bg-white overflow-hidden shadow-sm rounded-lg">
-            <div class="p-6 text-gray-900">
-                <div v-if="$page.props.flash && $page.props.flash.success" class="mb-4 p-4 bg-green-100 text-green-700 border border-green-400 rounded">
-                    {{ $page.props.flash.success }}
+        <div v-if="$page.props.flash && $page.props.flash.success" class="mb-6 p-4 bg-green-100 text-green-800 border border-green-200 rounded-lg">
+            {{ $page.props.flash.success }}
+        </div>
+        <div v-if="$page.props.flash && $page.props.flash.error" class="mb-6 p-4 bg-red-100 text-red-800 border border-red-200 rounded-lg">
+            {{ $page.props.flash.error }}
+        </div>
+         <div class="mt-4 md:mt-0 pb-5">
+                    <button @click="openModal()" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                         <i class="material-icons text-base mr-2">add</i>
+                        <span>Tambah Divisi</span>
+                    </button>
                 </div>
-                <div v-if="$page.props.flash && $page.props.flash.error" class="mb-4 p-4 bg-red-100 text-red-700 border border-red-400 rounded">
-                    {{ $page.props.flash.error }}
-                </div>
-
-                <PrimaryButton @click="openModal()">Tambah Divisi</PrimaryButton>
-
-                <div class="mt-6 overflow-x-auto">
-                    <table class="min-w-full bg-white">
-                        <thead class="bg-gray-200">
-                            <tr>
-                                <th class="py-3 px-6 text-left">Nama Divisi</th>
-                                <th class="py-3 px-6 text-left">Deskripsi</th>
-                                <th class="py-3 px-6 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-700">
-                            <tr v-if="divisi.length === 0">
-                                <td colspan="3" class="text-center py-4">Tidak ada data divisi.</td>
-                            </tr>
-                            <tr v-for="item in divisi" :key="item.id" class="border-b">
-                                <td class="py-3 px-6">{{ item.nama_divisi }}</td>
-                                <td class="py-3 px-6">{{ item.deskripsi }}</td>
-                                <td class="py-3 px-6 text-center">
-                                    <button @click="openModal(item)" class="text-yellow-600 hover:text-yellow-900 mr-2">Edit</button>
-                                    <button @click="deleteItem(item.id)" class="text-red-600 hover:text-red-900">Hapus</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Divisi</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Deskripsi</th>
+                            <th class="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-if="divisi.length === 0">
+                            <td colspan="3" class="text-center py-10 text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <i class="material-icons text-4xl text-gray-300 mb-2">apartment</i>
+                                    <span>Tidak ada data divisi.</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr v-for="item in divisi" :key="item.id" class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <p class="font-medium text-gray-900">{{ item.nama_divisi }}</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-gray-600 truncate max-w-md">{{ item.deskripsi || '-' }}</p>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                                <div class="flex items-center justify-center space-x-4">
+                                    <button @click="openModal(item)" class="text-gray-500 hover:text-yellow-600 transition-colors" title="Edit">
+                                        <i class="material-icons text-lg">edit</i>
+                                    </button>
+                                    <button @click="deleteItem(item.id)" class="text-gray-500 hover:text-red-600 transition-colors" title="Hapus">
+                                        <i class="material-icons text-lg">delete</i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

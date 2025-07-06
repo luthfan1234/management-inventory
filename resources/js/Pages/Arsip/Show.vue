@@ -1,5 +1,5 @@
 // File: resources/js/Pages/Arsip/Show.vue
-// Halaman untuk menampilkan detail satu arsip, sekarang dengan tombol Preview.
+// Halaman untuk menampilkan detail satu arsip, dengan gaya modern yang baru.
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -8,7 +8,8 @@ import { ref } from 'vue';
 import PdfPreviewModal from '@/Components/PdfPreviewModal.vue';
 
 const props = defineProps({
-    arsip: Object
+    arsip: Object,
+    auth: Object // Pastikan mengirimkan 'auth' dari controller
 });
 
 const showPdfModal = ref(false);
@@ -25,7 +26,7 @@ const closePdfPreview = () => {
 };
 
 const formatBytes = (bytes, decimals = 2) => {
-    if (bytes === 0) return '0 Bytes';
+    if (!bytes || bytes === 0) return '0 Bytes';
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
@@ -45,74 +46,99 @@ const formatDate = (dateString) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Detail Arsip Dokumen</h2>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 class="font-bold text-2xl text-gray-800">Detail Dokumen</h2>
+                    <p class="text-sm text-gray-500">Nomor Arsip: {{ arsip.nomor_arsip }}</p>
+                </div>
+                <div class="flex items-center space-x-2 mt-4 md:mt-0">
+                    <button v-if="arsip.file_type === 'pdf'" @click="openPdfPreview" class="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors">
+                        <i class="material-icons text-base mr-2">visibility</i>
+                        <span>Preview</span>
+                    </button>
+
+                </div>
+            </div>
         </template>
 
-        <div class="bg-white overflow-hidden shadow-sm rounded-lg">
-            <div class="p-6 text-gray-900">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-2">
-                        <h3 class="text-2xl font-bold mb-2">{{ arsip.judul }}</h3>
-                        <p class="text-sm text-gray-500 mb-4">Nomor Arsip: {{ arsip.nomor_arsip }}</p>
-
-                        <div class="prose max-w-none mb-6">
-                            <p>{{ arsip.deskripsi || 'Tidak ada deskripsi.' }}</p>
-                        </div>
-
-                        <!-- Tombol Aksi Utama -->
-                        <div class="flex items-center space-x-3">
-                            <Link :href="route('arsip.download', arsip.id)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                                <i class="fas fa-download mr-2"></i>
-                                <span>Unduh</span>
-                            </Link>
-                            <button v-if="arsip.file_type === 'pdf'" @click="openPdfPreview" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                                <i class="fas fa-eye mr-2"></i>
-                                <span>Preview</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="bg-gray-50 p-4 rounded-lg border">
-                            <h4 class="font-bold mb-3">Detail Dokumen</h4>
-                            <dl>
-                                <div class="py-2 flex justify-between">
-                                    <dt class="text-gray-600">Divisi:</dt>
-                                    <dd class="font-medium">{{ arsip.divisi.nama_divisi }}</dd>
-                                </div>
-                                <div class="py-2 flex justify-between">
-                                    <dt class="text-gray-600">Kategori:</dt>
-                                    <dd class="font-medium">{{ arsip.kategori.nama_kategori }}</dd>
-                                </div>
-                                <div class="py-2 flex justify-between">
-                                    <dt class="text-gray-600">Versi:</dt>
-                                    <dd class="font-medium">{{ arsip.versi_dokumen }}</dd>
-                                </div>
-                                <div class="py-2 flex justify-between">
-                                    <dt class="text-gray-600">Diunggah oleh:</dt>
-                                    <dd class="font-medium">{{ arsip.uploader.name }}</dd>
-                                </div>
-                                <div class="py-2 flex justify-between">
-                                    <dt class="text-gray-600">Tanggal Unggah:</dt>
-                                    <dd class="font-medium text-right">{{ formatDate(arsip.created_at) }}</dd>
-                                </div>
-                                <div class="py-2 flex justify-between">
-                                    <dt class="text-gray-600">Nama File:</dt>
-                                    <dd class="font-medium text-right truncate" :title="arsip.file_name">{{ arsip.file_name }}</dd>
-                                </div>
-                                 <div class="py-2 flex justify-between">
-                                    <dt class="text-gray-600">Ukuran File:</dt>
-                                    <dd class="font-medium">{{ formatBytes(arsip.file_size) }}</dd>
-                                </div>
-                            </dl>
-                        </div>
-                    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-2xl p-8 border border-gray-200">
+                <h1 class="text-3xl font-bold text-gray-900 mb-6">{{ arsip.judul }}</h1>
+                <div class="prose prose-lg max-w-none text-gray-700">
+                    <p>{{ arsip.deskripsi || 'Tidak ada deskripsi untuk dokumen ini.' }}</p>
                 </div>
+            </div>
 
-                <div class="mt-8 border-t pt-6 flex justify-start items-center">
-                     <Link :href="route('arsip.index')" class="text-blue-600 hover:text-blue-800">
-                        &larr; Kembali ke Daftar Arsip
-                    </Link>
-                </div>
+            <div class="lg:col-span-1 bg-white rounded-2xl p-6 border border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-800 mb-6">Informasi Dokumen</h3>
+                <ul class="divide-y divide-gray-200">
+                    <li class="flex items-start py-4">
+                        <i class="material-icons text-lg text-gray-400 mt-1 mr-4">business</i>
+                        <div>
+                            <p class="text-sm text-gray-500">Divisi</p>
+                            <p class="font-semibold text-gray-800">{{ arsip.divisi.nama_divisi }}</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start py-4">
+                        <i class="material-icons text-lg text-gray-400 mt-1 mr-4">category</i>
+                        <div>
+                            <p class="text-sm text-gray-500">Kategori</p>
+                            <p class="font-semibold text-gray-800">{{ arsip.kategori.nama_kategori }}</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start py-4">
+                        <i class="material-icons text-lg text-gray-400 mt-1 mr-4">tag</i>
+                        <div>
+                            <p class="text-sm text-gray-500">Versi</p>
+                            <p class="font-semibold text-gray-800">{{ arsip.versi_dokumen }}</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start py-4">
+                        <i class="material-icons text-lg text-gray-400 mt-1 mr-4">person</i>
+                        <div>
+                            <p class="text-sm text-gray-500">Diunggah oleh</p>
+                            <p class="font-semibold text-gray-800">{{ arsip.uploader.name }}</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start py-4">
+                        <i class="material-icons text-lg text-gray-400 mt-1 mr-4">calendar_today</i>
+                        <div>
+                            <p class="text-sm text-gray-500">Tanggal Unggah</p>
+                            <p class="font-semibold text-gray-800">{{ formatDate(arsip.created_at) }}</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start py-4">
+                        <i class="material-icons text-lg text-gray-400 mt-1 mr-4">attachment</i>
+                        <div>
+                            <p class="text-sm text-gray-500">Nama File</p>
+                            <p class="font-semibold text-gray-800 break-all">{{ arsip.file_name }}</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start py-4">
+                        <i class="material-icons text-lg text-gray-400 mt-1 mr-4">storage</i>
+                        <div>
+                            <p class="text-sm text-gray-500">Ukuran File</p>
+                            <p class="font-semibold text-gray-800">{{ formatBytes(arsip.file_size) }}</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start py-4 gap-2">
+                        <Link :href="route('arsip.download', arsip.id)" class="inline-flex items-center justify-center bg-green-100 hover:bg-green-200 text-green-700 font-semibold py-2 px-4 rounded-lg transition-colors">
+                            <i class="material-icons text-base mr-2">download</i>
+                            <span>Unduh</span>
+                        </Link>
+                        <Link v-if="auth.user.role === 'admin'" :href="route('arsip.edit', arsip.id)" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                            <i class="material-icons text-base mr-2">edit</i>
+                            <span>Edit</span>
+                        </Link>
+                    </li>
+                </ul>
             </div>
         </div>
 
