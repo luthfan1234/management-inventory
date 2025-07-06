@@ -1,182 +1,152 @@
 // File: resources/js/Layouts/AuthenticatedLayout.vue
-// Ini adalah layout utama untuk halaman yang memerlukan autentikasi.
-// Navigasi untuk Arsip, Divisi, dan Kategori akan ditambahkan di sini.
+// Layout utama yang diperbaiki: sidebar kini menggunakan h-screen untuk tinggi maksimal.
 
 <script setup>
 import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, usePage, Head } from '@inertiajs/vue3';
 
-const showingNavigationDropdown = ref(false);
-const authUser = usePage().props.auth.user;
+const page = usePage();
+const authUser = page.props.auth.user;
+
+// State untuk menu mobile dan dropdown profil
+const showingMobileMenu = ref(false);
+const showingProfileDropdown = ref(false);
+
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100">
-                <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
-                                </Link>
-                            </div>
+    <Head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </Head>
 
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
-                                <NavLink :href="route('arsip.index')" :active="route().current().startsWith('arsip.')">
-                                    Arsip Dokumen
-                                </NavLink>
-                                <!-- Admin Only Links -->
-                                <template v-if="authUser.role === 'admin'">
-                                    <NavLink :href="route('divisi.index')" :active="route().current().startsWith('divisi.')">
-                                        Manajemen Divisi
-                                    </NavLink>
-                                    <NavLink :href="route('kategori.index')" :active="route().current().startsWith('kategori.')">
-                                        Manajemen Kategori
-                                    </NavLink>
-                                </template>
-                            </div>
-                        </div>
-
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <!-- Settings Dropdown -->
-                            <div class="ms-3 relative">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                {{ authUser.name }}
-
-                                                <svg
-                                                    class="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </template>
-
-                                    <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <!-- Hamburger -->
-                        <div class="-me-2 flex items-center sm:hidden">
-                            <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            >
-                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
+    <div class="bg-gray-50 font-sans min-h-screen flex">
+        <aside :class="{'translate-x-0': showingMobileMenu, '-translate-x-full': !showingMobileMenu}" class="w-80 flex-shrink-0 flex flex-col bg-white border-r border-gray-200 fixed top-0 h-screen z-40 md:sticky md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
+            <div class="flex items-center justify-between p-6 border-b border-gray-100">
+                <div class="inline-flex items-center space-x-3 cursor-pointer select-none">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                        <i class="material-icons text-white text-xl">folder</i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-xl text-gray-800 block">Arsip Digital</span>
+                        <span class="text-sm text-gray-500">DAOP 6 Yogyakarta</span>
                     </div>
                 </div>
+                <button @click="showingMobileMenu = false" class="md:hidden text-gray-400 hover:text-gray-600">
+                    <i class="material-icons text-xl">close</i>
+                </button>
+            </div>
 
-                <!-- Responsive Navigation Menu -->
-                <div
-                    :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden"
-                >
-                    <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
-                         <ResponsiveNavLink :href="route('arsip.index')" :active="route().current('arsip.index')">
-                            Arsip Dokumen
-                        </ResponsiveNavLink>
-                         <template v-if="authUser.role === 'admin'">
-                            <ResponsiveNavLink :href="route('divisi.index')" :active="route().current('divisi.index')">
-                                Manajemen Divisi
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('kategori.index')" :active="route().current('kategori.index')">
-                                Manajemen Kategori
-                            </ResponsiveNavLink>
-                        </template>
-                    </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 px-3">Main Menu</p>
 
-                    <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
-                        <div class="px-4">
-                            <div class="font-medium text-base text-gray-800">
-                                {{ authUser.name }}
-                            </div>
-                            <div class="font-medium text-sm text-gray-500">{{ authUser.email }}</div>
-                        </div>
+                <Link :href="route('dashboard')"
+                      class="flex items-center px-4 py-3 rounded-2xl transition-all group"
+                      :class="{
+                          'bg-blue-100 text-blue-700': route().current('dashboard'),
+                          'text-gray-600 hover:bg-gray-100 hover:text-gray-900': !route().current('dashboard')
+                      }">
+                    <i class="material-icons mr-3 text-xl">dashboard</i>
+                    <span class="font-medium">Dashboard</span>
+                </Link>
 
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
+                <Link :href="route('arsip.index')"
+                      class="flex items-center px-4 py-3 rounded-2xl transition-all group"
+                      :class="{
+                          'bg-blue-100 text-blue-700': route().current().startsWith('arsip.'),
+                          'text-gray-600 hover:bg-gray-100 hover:text-gray-900': !route().current().startsWith('arsip.')
+                      }">
+                    <i class="material-icons mr-3 text-xl">folder_open</i>
+                    <span class="font-medium">Arsip Dokumen</span>
+                </Link>
+
+                <template v-if="authUser.role === 'admin'">
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-8 mb-4 px-3">Management</p>
+
+                    <Link :href="route('divisi.index')"
+                          class="flex items-center px-4 py-3 rounded-2xl transition-all group"
+                          :class="{
+                              'bg-blue-100 text-blue-700': route().current().startsWith('divisi.'),
+                              'text-gray-600 hover:bg-gray-100 hover:text-gray-900': !route().current().startsWith('divisi.')
+                          }">
+                        <i class="material-icons mr-3 text-xl">business</i>
+                        <span class="font-medium">Manajemen Divisi</span>
+                    </Link>
+
+                    <Link :href="route('kategori.index')"
+                          class="flex items-center px-4 py-3 rounded-2xl transition-all group"
+                          :class="{
+                              'bg-blue-100 text-blue-700': route().current().startsWith('kategori.'),
+                              'text-gray-600 hover:bg-gray-100 hover:text-gray-900': !route().current().startsWith('kategori.')
+                          }">
+                        <i class="material-icons mr-3 text-xl">local_offer</i>
+                        <span class="font-medium">Manajemen Kategori</span>
+                    </Link>
+                </template>
             </nav>
 
-            <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
+            <div class="mt-auto"></div>
+        </aside>
+
+        <div class="flex-1 flex flex-col overflow-auto">
+            <header class="flex items-center justify-between bg-white px-8 py-5 border-b border-gray-200 sticky top-0 z-20">
+                <div class="flex items-center">
+                    <button @click="showingMobileMenu = true" class="md:hidden text-gray-500 hover:text-gray-700 mr-4">
+                        <i class="material-icons text-xl">menu</i>
+                    </button>
+                    <div class="flex-1">
+                        <slot name="header" />
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center bg-gray-100 rounded-2xl px-4 py-2">
+                        <i class="material-icons text-gray-400 mr-2">search</i>
+                        <input type="text" placeholder="Cari dokumen..." class="bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-500 w-64">
+                    </div>
+
+                    <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+                        <i class="material-icons text-xl">notifications</i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+
+                    <div class="relative">
+                        <button @click="showingProfileDropdown = !showingProfileDropdown" class="block">
+                            <img :src="`https://ui-avatars.com/api/?name=${authUser.name}&background=3B82F6&color=fff&rounded=true`" alt="User Avatar" class="w-10 h-10 rounded-full object-cover" />
+                        </button>
+
+                        <transition
+                            enter-active-class="transition ease-out duration-100"
+                            enter-from-class="transform opacity-0 scale-95"
+                            enter-to-class="transform opacity-100 scale-100"
+                            leave-active-class="transition ease-in duration-75"
+                            leave-from-class="transform opacity-100 scale-100"
+                            leave-to-class="transform opacity-0 scale-95"
+                        >
+                            <div v-if="showingProfileDropdown" @click.away="showingProfileDropdown = false" class="absolute top-full right-0 mt-3 w-80 bg-white rounded-2xl border border-gray-200 p-4 z-50">
+                                <div class="flex items-center space-x-3 p-4 bg-gray-50 rounded-2xl mb-3">
+                                    <img :src="`https://ui-avatars.com/api/?name=${authUser.name}&background=3B82F6&color=fff&rounded=true`" alt="User Avatar" class="w-12 h-12 rounded-xl object-cover" />
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-semibold text-gray-900 text-sm truncate">{{ authUser.name }}</p>
+                                        <p class="text-gray-500 text-xs capitalize">{{ authUser.role }}</p>
+                                    </div>
+                                    <Link :href="route('profile.edit')" class="text-gray-400 hover:text-gray-600 transition-colors">
+                                        <i class="material-icons text-lg">settings</i>
+                                    </Link>
+                                </div>
+
+                                <Link :href="route('logout')" method="post" as="button" class="w-full flex items-center justify-center bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-2xl transition-all font-medium">
+                                    <i class="material-icons mr-2 text-lg">logout</i>
+                                    <span>Logout</span>
+                                </Link>
+                            </div>
+                        </transition>
+                    </div>
                 </div>
             </header>
 
-            <!-- Page Content -->
-            <main>
+            <main class="p-8 flex-1 overflow-auto">
                 <slot />
             </main>
         </div>
     </div>
 </template>
-
-// ---

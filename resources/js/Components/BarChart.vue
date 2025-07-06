@@ -1,5 +1,5 @@
 // File: resources/js/Components/BarChart.vue
-// Komponen baru untuk menampilkan grafik batang di Dashboard.
+// Komponen untuk menampilkan grafik batang di Dashboard.
 
 <script setup>
 import { Bar } from 'vue-chartjs';
@@ -17,11 +17,38 @@ defineProps({
         default: () => ({
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            family: 'Inter, sans-serif',
+                            size: 12
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
         }),
     },
 });
 </script>
 
 <template>
-    <Bar :data="chartData" :options="chartOptions" />
+    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div class="h-80">
+            <Bar :data="chartData" :options="chartOptions" />
+        </div>
+    </div>
 </template>

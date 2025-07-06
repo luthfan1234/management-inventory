@@ -75,32 +75,46 @@ onUnmounted(() => {
             @dragleave.prevent="handleDragLeave"
             @drop.prevent="handleDrop"
             @click="openFileBrowser"
-            class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors duration-300"
+            class="border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300 hover:shadow-lg"
             :class="{
-                'border-blue-500 bg-blue-50': isDragging,
-                'border-gray-300 hover:border-gray-400': !isDragging && !file,
-                'border-green-500 bg-green-50': file
+                'border-blue-400 bg-blue-50 shadow-md': isDragging,
+                'border-gray-300 hover:border-blue-400 hover:bg-gray-50': !isDragging && !file,
+                'border-green-400 bg-green-50 shadow-md': file
             }"
         >
             <input type="file" ref="fileInput" @change="handleFileChange" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx">
 
-            <div v-if="!file">
-                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <p class="mt-2 text-sm text-gray-600">
-                    <span class="font-semibold">Klik untuk memilih</span> atau seret dan lepas file di sini
-                </p>
-                <p class="text-xs text-gray-500">PDF, DOC, DOCX, XLS, XLSX (maks. 10MB)</p>
+            <div v-if="!file" class="space-y-4">
+                <div class="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-lg font-semibold text-gray-700 mb-2">
+                        Seret dan lepas file di sini
+                    </p>
+                    <p class="text-sm text-gray-500 mb-3">atau <span class="text-blue-600 font-medium">klik untuk memilih file</span></p>
+                    <p class="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full inline-block">PDF, DOC, DOCX, XLS, XLSX (maks. 10MB)</p>
+                </div>
             </div>
-            <div v-else>
-                 <svg class="mx-auto h-12 w-12 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p class="mt-2 font-semibold text-gray-800">{{ fileName }}</p>
-                <p class="text-sm text-gray-600">File berhasil dipilih.</p>
-                <button @click.stop="removeFile" class="mt-2 text-xs text-red-500 hover:text-red-700 font-semibold">Hapus File</button>
+
+            <div v-else class="space-y-4">
+                <div class="mx-auto w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-lg font-semibold text-gray-800 mb-1">{{ fileName }}</p>
+                    <p class="text-sm text-green-600 font-medium mb-3">File berhasil dipilih</p>
+                    <button @click.stop="removeFile" class="bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+                        Hapus File
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+// ---

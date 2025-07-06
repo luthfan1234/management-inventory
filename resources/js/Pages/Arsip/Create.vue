@@ -1,13 +1,10 @@
 // File: resources/js/Pages/Arsip/Create.vue
-// Formulir untuk membuat arsip baru, sekarang dengan Dropzone.
+// Formulir untuk membuat arsip baru, dengan layout dan gaya yang diperbarui.
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, Link } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import Dropzone from '@/Components/Dropzone.vue';
 
 const props = defineProps({
@@ -20,8 +17,8 @@ const form = useForm({
     nomor_arsip: '',
     judul: '',
     deskripsi: '',
-    divisi_id: '',
-    kategori_id: '',
+    divisi_id: null,
+    kategori_id: null,
     versi_dokumen: '1.0',
     file: null,
 });
@@ -42,81 +39,85 @@ const submit = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Tambah Arsip Baru</h2>
+            <div>
+                <h2 class="font-bold text-2xl text-gray-800">Tambah Arsip Baru</h2>
+                <p class="text-sm text-gray-500">Isi detail dokumen untuk menambahkannya ke sistem.</p>
+            </div>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <form @submit.prevent="submit">
-                            <!-- Nomor Arsip -->
-                            <div class="mt-4">
-                                <InputLabel for="nomor_arsip" value="Nomor Arsip" />
-                                <TextInput id="nomor_arsip" type="text" class="mt-1 block w-full" v-model="form.nomor_arsip" required />
-                                <InputError class="mt-2" :message="form.errors.nomor_arsip" />
-                            </div>
+        <form @submit.prevent="submit" class="space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                            <!-- Judul -->
-                            <div class="mt-4">
-                                <InputLabel for="judul" value="Judul" />
-                                <TextInput id="judul" type="text" class="mt-1 block w-full" v-model="form.judul" required />
-                                <InputError class="mt-2" :message="form.errors.judul" />
-                            </div>
+                <div class="lg:col-span-2 bg-white rounded-2xl p-8 border border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6">Detail Dokumen</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                            <!-- Deskripsi -->
-                            <div class="mt-4">
-                                <InputLabel for="deskripsi" value="Deskripsi" />
-                                <textarea id="deskripsi" v-model="form.deskripsi" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"></textarea>
-                                <InputError class="mt-2" :message="form.errors.deskripsi" />
-                            </div>
+                        <div class="md:col-span-1">
+                            <label for="nomor_arsip" class="block text-sm font-medium text-gray-700 mb-1">Nomor Arsip</label>
+                            <input id="nomor_arsip" type="text" v-model="form.nomor_arsip" required class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            <InputError class="mt-2" :message="form.errors.nomor_arsip" />
+                        </div>
 
-                            <!-- Divisi -->
-                            <div class="mt-4">
-                                <InputLabel for="divisi_id" value="Divisi" />
-                                <select id="divisi_id" v-model="form.divisi_id" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                    <option value="" disabled>Pilih Divisi</option>
-                                    <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama }}</option>
-                                </select>
-                                <InputError class="mt-2" :message="form.errors.divisi_id" />
-                            </div>
+                        <div class="md:col-span-1">
+                            <label for="versi_dokumen" class="block text-sm font-medium text-gray-700 mb-1">Versi Dokumen</label>
+                            <input id="versi_dokumen" type="text" v-model="form.versi_dokumen" required class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            <InputError class="mt-2" :message="form.errors.versi_dokumen" />
+                        </div>
 
-                            <!-- Kategori -->
-                            <div class="mt-4">
-                                <InputLabel for="kategori_id" value="Kategori" />
-                                <select id="kategori_id" v-model="form.kategori_id" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                    <option value="" disabled>Pilih Kategori</option>
-                                    <option v-for="k in kategori" :key="k.id" :value="k.id">{{ k.nama_kategori }}</option>
-                                </select>
-                                <InputError class="mt-2" :message="form.errors.kategori_id" />
-                            </div>
+                        <div class="md:col-span-2">
+                            <label for="judul" class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
+                            <input id="judul" type="text" v-model="form.judul" required class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                            <InputError class="mt-2" :message="form.errors.judul" />
+                        </div>
 
-                            <!-- Versi Dokumen -->
-                            <div class="mt-4">
-                                <InputLabel for="versi_dokumen" value="Versi Dokumen" />
-                                <TextInput id="versi_dokumen" type="text" class="mt-1 block w-full" v-model="form.versi_dokumen" required />
-                                <InputError class="mt-2" :message="form.errors.versi_dokumen" />
-                            </div>
+                        <div class="md:col-span-2">
+                            <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                            <textarea id="deskripsi" v-model="form.deskripsi" rows="4" class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
+                            <InputError class="mt-2" :message="form.errors.deskripsi" />
+                        </div>
 
-                             <!-- File Upload -->
-                            <div class="mt-4">
-                                <InputLabel for="file" value="File Dokumen" />
-                                <Dropzone @file-dropped="handleFile" class="mt-1" />
-                                <progress v-if="form.progress" :value="form.progress.percentage" max="100" class="w-full mt-2">
-                                    {{ form.progress.percentage }}%
-                                </progress>
-                                <InputError class="mt-2" :message="form.errors.file" />
-                            </div>
+                        <div class="md:col-span-1">
+                             <label for="divisi_id" class="block text-sm font-medium text-gray-700 mb-1">Divisi</label>
+                             <select id="divisi_id" v-model="form.divisi_id" required class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                                 <option :value="null" disabled>Pilih Divisi</option>
+                                 <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama_divisi }}</option>
+                             </select>
+                             <InputError class="mt-2" :message="form.errors.divisi_id" />
+                        </div>
 
-                            <div class="flex items-center justify-end mt-6">
-                                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                    Simpan Arsip
-                                </PrimaryButton>
-                            </div>
-                        </form>
+                        <div class="md:col-span-1">
+                             <label for="kategori_id" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                             <select id="kategori_id" v-model="form.kategori_id" required class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                                 <option :value="null" disabled>Pilih Kategori</option>
+                                 <option v-for="k in kategori" :key="k.id" :value="k.id">{{ k.nama_kategori }}</option>
+                             </select>
+                             <InputError class="mt-2" :message="form.errors.kategori_id" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 space-y-8">
+                    <div class="bg-white rounded-2xl p-8 border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">File Dokumen</h3>
+                        <Dropzone @file-dropped="handleFile" class="mt-1" />
+                        <progress v-if="form.progress" :value="form.progress.percentage" max="100" class="w-full mt-4 [&::-webkit-progress-bar]:rounded-lg [&::-webkit-progress-value]:rounded-lg [&::-webkit-progress-bar]:bg-slate-300 [&::-webkit-progress-value]:bg-blue-600 [&::-moz-progress-bar]:bg-blue-600"></progress>
+                        <InputError class="mt-2" :message="form.errors.file" />
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-gray-200">
+                        <button type="submit"
+                                :class="{ 'opacity-50': form.processing }"
+                                :disabled="form.processing"
+                                class="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+                            <i class="material-icons mr-2">save</i>
+                            Simpan Arsip
+                        </button>
+                        <Link :href="route('arsip.index')" class="w-full text-center mt-3 inline-block text-sm text-gray-500 hover:text-gray-800">
+                            Batal
+                        </Link>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </AuthenticatedLayout>
 </template>

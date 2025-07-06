@@ -1,5 +1,5 @@
 // File: resources/js/Pages/Arsip/Index.vue
-// Halaman utama untuk menampilkan, mencari, dan memfilter daftar arsip.
+// Halaman utama untuk menampilkan, mencari, dan memfilter daftar arsip dengan gaya baru.
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
@@ -73,94 +73,124 @@ const deleteArsip = (id) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Daftar Arsip Dokumen</h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-
-                        <div v-if="$page.props.flash && $page.props.flash.success" class="mb-4 p-4 bg-green-100 text-green-700 border border-green-400 rounded">
-                            {{ $page.props.flash.success }}
-                        </div>
-                        <div v-if="$page.props.flash && $page.props.flash.error" class="mb-4 p-4 bg-red-100 text-red-700 border border-red-400 rounded">
-                            {{ $page.props.flash.error }}
-                        </div>
-
-                        <div class="flex justify-between items-center mb-4">
-                            <Link v-if="auth.user.role === 'admin'" :href="route('arsip.create')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                Tambah Arsip
-                            </Link>
-                             <a :href="exportUrl" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                <span>Export Excel</span>
-                            </a>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <input type="text" v-model="search" placeholder="Cari judul atau nomor arsip..." class="form-input rounded-md shadow-sm">
-                            <select v-model="divisiId" class="form-select rounded-md shadow-sm">
-                                <option :value="null">Semua Divisi</option>
-                                <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama_divisi }}</option>
-                            </select>
-                            <select v-model="kategoriId" class="form-select rounded-md shadow-sm">
-                                <option :value="null">Semua Kategori</option>
-                                <option v-for="k in kategori" :key="k.id" :value="k.id">{{ k.nama_kategori }}</option>
-                            </select>
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full bg-white">
-                                <thead class="bg-gray-200">
-                                    <tr>
-                                        <th class="py-3 px-6 text-left">Nomor Arsip</th>
-                                        <th class="py-3 px-6 text-left">Judul</th>
-                                        <th class="py-3 px-6 text-left">Divisi</th>
-                                        <th class="py-3 px-6 text-left">Kategori</th>
-                                        <th class="py-3 px-6 text-left">Tipe File</th>
-                                        <th class="py-3 px-6 text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-gray-700">
-                                    <tr v-if="arsip.data.length === 0">
-                                        <td colspan="6" class="text-center py-4">Tidak ada data arsip.</td>
-                                    </tr>
-                                    <tr v-for="item in arsip.data" :key="item.id" class="border-b">
-                                        <td class="py-3 px-6">{{ item.nomor_arsip }}</td>
-                                        <td class="py-3 px-6">{{ item.judul }}</td>
-                                        <td class="py-3 px-6">{{ item.divisi.nama_divisi }}</td>
-                                        <td class="py-3 px-6">{{ item.kategori.nama_kategori }}</td>
-                                        <td class="py-3 px-6 uppercase">{{ item.file_type }}</td>
-                                        <td class="py-3 px-6 text-center whitespace-nowrap">
-                                            <button v-if="item.file_type === 'pdf'" @click="openPdfPreview(item)" class="text-blue-600 hover:text-blue-900 mr-2">Preview</button>
-                                            <Link :href="route('arsip.show', item.id)" class="text-indigo-600 hover:text-indigo-900 mr-2">Lihat</Link>
-                                            <Link :href="route('arsip.download', item.id)" class="text-green-600 hover:text-green-900 mr-2">Unduh</Link>
-                                            <template v-if="auth.user.role === 'admin'">
-                                                <Link :href="route('arsip.edit', item.id)" class="text-yellow-600 hover:text-yellow-900 mr-2">Edit</Link>
-                                                <button @click="deleteArsip(item.id)" class="text-red-600 hover:text-red-900">Hapus</button>
-                                            </template>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="mt-6 flex justify-end">
-                            <template v-for="(link, key) in arsip.links" :key="key">
-                                <Link
-                                    v-if="link.url"
-                                    :href="link.url"
-                                    class="px-4 py-2 mx-1 text-sm leading-4 rounded"
-                                    :class="{ 'bg-blue-500 text-white': link.active, 'bg-white hover:bg-gray-100': !link.active }"
-                                    v-html="link.label"
-                                />
-                                <span v-else class="px-4 py-2 mx-1 text-sm leading-4 text-gray-400" v-html="link.label"></span>
-                            </template>
-                        </div>
-                    </div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 class="font-bold text-2xl text-gray-800">Arsip Dokumen</h2>
+                    <p class="text-sm text-gray-500">Kelola dan cari semua dokumen digital di sini.</p>
                 </div>
             </div>
+        </template>
+
+        <div v-if="$page.props.flash && $page.props.flash.success" class="mb-6 p-4 bg-green-100 text-green-800 border border-green-200 rounded-lg">
+            {{ $page.props.flash.success }}
+        </div>
+        <div v-if="$page.props.flash && $page.props.flash.error" class="mb-6 p-4 bg-red-100 text-red-800 border border-red-200 rounded-lg">
+            {{ $page.props.flash.error }}
+        </div>
+        <div class="flex items-center space-x-2 mt-4 md:mt-0 pb-5">
+            <a :href="exportUrl" class="inline-flex items-center justify-center bg-green-100 hover:bg-green-200 text-green-700 font-semibold py-2 px-4 rounded-lg transition-colors">
+                <i class="material-icons text-base mr-2">download</i>
+                    <span>Export</span>
+            </a>
+                <Link v-if="auth.user.role === 'admin'" :href="route('arsip.create')" class="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                    <i class="material-icons text-base mr-2">add</i>
+                        <span>Tambah Arsip</span>
+                </Link>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 mb-6 border border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Filter & Pencarian</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" v-model="search" placeholder="Cari judul atau nomor arsip..." class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                <select v-model="divisiId" class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                    <option :value="null">Semua Divisi</option>
+                    <option v-for="d in divisi" :key="d.id" :value="d.id">{{ d.nama_divisi }}</option>
+                </select>
+                <select v-model="kategoriId" class="w-full bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                    <option :value="null">Semua Kategori</option>
+                    <option v-for="k in kategori" :key="k.id" :value="k.id">{{ k.nama_kategori }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+             <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">Daftar Dokumen</h3>
+                <p class="text-sm text-gray-500 mt-1">Menampilkan {{ arsip.from }} - {{ arsip.to }} dari {{ arsip.total }} hasil.</p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nomor Arsip</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Judul</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Divisi</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipe File</th>
+                            <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr v-if="arsip.data.length === 0">
+                            <td colspan="6" class="text-center py-10 text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <i class="material-icons text-4xl text-gray-300 mb-2">folder_off</i>
+                                    <span>Tidak ada data arsip yang ditemukan.</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr v-for="item in arsip.data" :key="item.id" class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ item.nomor_arsip }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.judul }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ item.divisi.nama_divisi }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ item.kategori.nama_kategori }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 uppercase">{{ item.file_type }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                                <div class="flex items-center justify-center space-x-3">
+                                    <button v-if="item.file_type === 'pdf'" @click="openPdfPreview(item)" class="text-gray-500 hover:text-blue-600 transition-colors" title="Preview">
+                                        <i class="material-icons text-lg">visibility</i>
+                                    </button>
+                                    <Link :href="route('arsip.show', item.id)" class="text-gray-500 hover:text-indigo-600 transition-colors" title="Lihat Detail">
+                                        <i class="material-icons text-lg">info</i>
+                                    </Link>
+                                    <Link :href="route('arsip.download', item.id)" class="text-gray-500 hover:text-green-600 transition-colors" title="Unduh">
+                                        <i class="material-icons text-lg">download</i>
+                                    </Link>
+                                    <template v-if="auth.user.role === 'admin'">
+                                        <Link :href="route('arsip.edit', item.id)" class="text-gray-500 hover:text-yellow-600 transition-colors" title="Edit">
+                                            <i class="material-icons text-lg">edit</i>
+                                        </Link>
+                                        <button @click="deleteArsip(item.id)" class="text-gray-500 hover:text-red-600 transition-colors" title="Hapus">
+                                            <i class="material-icons text-lg">delete</i>
+                                        </button>
+                                    </template>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+             <div v-if="arsip.links.length > 3" class="p-6 border-t border-gray-200">
+                 <div class="flex justify-end">
+                     <template v-for="(link, key) in arsip.links" :key="key">
+                         <Link
+                             v-if="link.url"
+                             :href="link.url"
+                             class="px-4 py-2 mx-1 text-sm leading-4 rounded-md border transition-colors"
+                             :class="{
+                                'bg-blue-600 border-blue-600 text-white': link.active,
+                                'bg-white border-gray-300 text-gray-700 hover:bg-gray-100': !link.active
+                             }"
+                             v-html="link.label"
+                         />
+                         <span v-else class="px-4 py-2 mx-1 text-sm leading-4 text-gray-400 border rounded-md" v-html="link.label"></span>
+                     </template>
+                 </div>
+             </div>
         </div>
 
         <PdfPreviewModal :show="showPdfModal" :pdf-url="pdfPreviewUrl" :title="pdfPreviewTitle" @close="closePdfPreview" />

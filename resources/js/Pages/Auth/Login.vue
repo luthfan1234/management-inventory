@@ -50,7 +50,7 @@ const submit = () => {
 
 <template>
     <Head title="Log in">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     </Head>
     <div class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-6 md:px-10">
         <div class="container max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-8 md:gap-20 items-center">
@@ -78,11 +78,11 @@ const submit = () => {
 
                 <div class="flex space-x-2 bg-gray-100 p-1 rounded-xl mb-8">
                     <button type="button" :class="{ 'bg-white shadow-sm text-[#0065B3]': isAdmin, 'text-gray-500 hover:bg-white': !isAdmin }" @click="updateRole(true)" class="flex items-center justify-center py-2 px-16 rounded-xl transition font-semibold">
-                        <span class="material-symbols-outlined text-lg mr-2">admin_panel_settings</span>
+                        <i class="material-icons text-lg mr-2">admin_panel_settings</i>
                         <span>Admin</span>
                     </button>
                     <button type="button" :class="{ 'bg-white shadow-sm text-[#0065B3]': !isAdmin, 'text-gray-500 hover:bg-white': isAdmin }" @click="updateRole(false)" class="flex items-center justify-center py-2 px-16 rounded-xl transition font-semibold">
-                        <span class="material-symbols-outlined text-lg mr-2">person</span>
+                        <i class="material-icons text-lg mr-2">person</i>
                         <span>User</span>
                     </button>
                 </div>
@@ -92,7 +92,7 @@ const submit = () => {
                         <div class="relative">
                             <input id="email" v-model="form.email" type="email" :placeholder="emailPlaceholder" class="w-full pl-10 pr-4 py-3 rounded-xl bg-blue-50 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#0065B3]" required autofocus autocomplete="username" />
                             <div class="absolute inset-y-0 left-3 flex items-center text-gray-500">
-                                <span class="material-symbols-outlined text-xl">email</span>
+                                <i class="material-icons text-xl">email</i>
                             </div>
                         </div>
                         <InputError class="mt-2" :message="form.errors.email" />
@@ -108,16 +108,10 @@ const submit = () => {
                                     required
                                     autocomplete="current-password"/>
                             <div class="absolute inset-y-0 left-3 flex items-center text-gray-500">
-                                <span class="material-symbols-outlined text-xl">lock</span>
+                                <i class="material-icons text-xl">lock</i>
                             </div>
                             <div class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500" @click="togglePassword">
-                                <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.958 9.958 0 012.186-3.368M6.477 6.477A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.972 9.972 0 01-4.153 5.163M15 12a3 3 0 00-3-3m0 0a3 3 0 013 3m-3 0a3 3 0 003 3m-3 0a3 3 0 01-3-3m13.5 10.5L3 3" />
-                                </svg>
+                                <i class="material-icons text-lg">{{ showPassword ? 'visibility_off' : 'visibility' }}</i>
                             </div>
                         </div>
                         <InputError class="mt-2" :message="form.errors.password" />
@@ -148,4 +142,4 @@ const submit = () => {
         </div>
     </div>
 </template>
-
+                   
