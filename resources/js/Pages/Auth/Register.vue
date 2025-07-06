@@ -1,10 +1,19 @@
+// File: resources/js/Pages/Auth/Register.vue
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+
+const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+};
+
+const toggleConfirmPassword = () => {
+    showConfirmPassword.value = !showConfirmPassword.value;
+};
 
 const form = useForm({
     name: '',
@@ -21,93 +30,102 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Register" />
+    <Head title="Register">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </Head>
+    <div class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-6 md:px-10">
+        <div class="container max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-8 md:gap-20 items-center">
+            <section class="bg-white rounded-3xl p-8 sm:p-12 w-full max-w-xl mx-auto shadow-xl">
+                <div class="flex flex-col items-center mb-6">
+                     <div class="w-24 mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 294.74 124.22" class="w-full h-auto">
+                                <title>Logo KAI Baru</title>
+                                <g id="Layer_2">
+                                    <g id="Layer_1-2">
+                                        <path fill="#2d2a70" d="M99.58,124.22h28.56l-6.55-10.77Zm16.67-19.53L86.56,55.91,144.12,0H98.65a13.65,13.65,0,0,0-9.54,3.88L48.79,43.28,53.33,0H12.27L0,116.81a6.71,6.71,0,0,0,6.68,7.42h33.6L43.07,98,55.45,86l21.78,34.43a8.13,8.13,0,0,0,6.87,3.78H99.58l7.81-15.57Z"/>
+                                        <path fill="#ed6b23" d="M141,124.22l55.61-33.81,7.08,28.71a6.71,6.71,0,0,0,6.52,5.11h36L230.13,70l61.24-37.24.26-2.5-192,93.95Zm83.38-73.65L209.37,0H174a19.52,19.52,0,0,0-17.45,10.77L106,111.37,292,26.52l.29-2.85ZM164.6,74.24,177,48l3.27-7.25a2.23,2.23,0,0,1,4.19.38l5.67,23Z"/>
+                                        <path fill="#2d2a70" d="M269.53,0a19.52,19.52,0,0,0-19.41,17.49l-2.5,23.88,44.69-17.7L294.74,0Zm-30.6,124.22h43l9.42-91.45L245.6,60.61Z"/>
+                                    </g>
+                                </g>
+                            </svg>
+                    </div>
+                </div>
+                <h2 class="text-xl font-bold mb-1 text-center text-gray-900">Buat Akun Baru</h2>
+                <p class="text-center text-gray-500 mb-8"> Silakan isi data berikut untuk mendaftar sebagai User.</p>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
+                <form class="space-y-5" @submit.prevent="submit">
+                    <div>
+                        <label for="name" class="block text-gray-700 font-semibold mb-2">Nama Lengkap</label>
+                        <div class="relative">
+                            <input id="name" v-model="form.name" type="text" placeholder="Masukan nama lengkap" class="w-full pl-10 pr-4 py-3 rounded-xl bg-blue-50 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600" required autofocus autocomplete="name" />
+                            <div class="absolute inset-y-0 left-3 flex items-center text-gray-500">
+                                <i class="material-icons text-xl">person</i>
+                            </div>
+                        </div>
+                        <InputError class="mt-2" :message="form.errors.name" />
+                    </div>
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+                    <div>
+                        <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
+                        <div class="relative">
+                            <input id="email" v-model="form.email" type="email" placeholder="Masukan email aktif" class="w-full pl-10 pr-4 py-3 rounded-xl bg-blue-50 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600" required autocomplete="username" />
+                            <div class="absolute inset-y-0 left-3 flex items-center text-gray-500">
+                                <i class="material-icons text-xl">email</i>
+                            </div>
+                        </div>
+                        <InputError class="mt-2" :message="form.errors.email" />
+                    </div>
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+                    <div>
+                        <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+                        <div class="relative">
+                            <input :type="showPassword ? 'text' : 'password'" id="password" v-model="form.password" placeholder="Buat password" class="w-full pl-10 pr-10 py-3 rounded-xl bg-blue-50 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600" required autocomplete="new-password"/>
+                            <div class="absolute inset-y-0 left-3 flex items-center text-gray-500">
+                                <i class="material-icons text-xl">lock</i>
+                            </div>
+                            <div class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500" @click="togglePassword">
+                                <i class="material-icons text-lg">{{ showPassword ? 'visibility_off' : 'visibility' }}</i>
+                            </div>
+                        </div>
+                        <InputError class="mt-2" :message="form.errors.password" />
+                    </div>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+                    <div>
+                        <label for="password_confirmation" class="block text-gray-700 font-semibold mb-2">Konfirmasi Password</label>
+                        <div class="relative">
+                            <input :type="showConfirmPassword ? 'text' : 'password'" id="password_confirmation" v-model="form.password_confirmation" placeholder="Ulangi password" class="w-full pl-10 pr-10 py-3 rounded-xl bg-blue-50 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600" required autocomplete="new-password"/>
+                            <div class="absolute inset-y-0 left-3 flex items-center text-gray-500">
+                                <i class="material-icons text-xl">lock</i>
+                            </div>
+                            <div class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500" @click="toggleConfirmPassword">
+                                <i class="material-icons text-lg">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</i>
+                            </div>
+                        </div>
+                        <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                    </div>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+                    <button type="submit" class="w-full bg-blue-600 text-white rounded-xl py-3 mt-8 font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                        {{ form.processing ? 'Mendaftarkan...' : 'Daftar' }}
+                    </button>
+                </form>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                 <p class="mt-8 text-center text-sm text-gray-500">
+                    Sudah punya akun?
+                    <Link :href="route('login')" class="font-semibold text-blue-600 hover:underline">
+                        Login di sini
+                    </Link>
+                </p>
+            </section>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Already registered?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Register
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+            <section class="hidden md:flex flex-col justify-between rounded-3xl bg-gradient-to-b from-blue-600 to-blue-800 text-white p-10 shadow-lg h-full">
+                <div>
+                    <p class="text-sm mb-3 text-blue-200 font-semibold">— PT Kereta Api Indonesia (Persero)</p>
+                    <h2 class="font-extrabold text-3xl sm:text-4xl leading-snug">Mengelola dan Mengamankan Aset Digital<br />DAOP 6 Yogyakarta</h2>
+                </div>
+                <div class="mt-auto text-center">
+                    <p class="text-sm font-medium opacity-80">© {{ new Date().getFullYear() }} Divisi Regional VI Yogyakarta</p>
+                </div>
+            </section>
+        </div>
+    </div>
 </template>
